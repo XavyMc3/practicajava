@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mostrar u Ocultar Elemento</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .shape {
+            width: 100px;
+            height: 100px;
+            margin: 20px;
+            cursor: pointer;
+        }
+        #circle {
+            border-radius: 50%;
+            background-color: red;
+        }
+        #square {
+            background-color: blue;
+        }
+        #triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid green;
+        }
+        .message-box {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Mostrar u Ocultar Elemento</h1>
+        <div class="d-flex justify-content-center">
+            <div id="circle" class="shape"></div>
+            <div id="square" class="shape"></div>
+            <div id="triangle" class="shape"></div>
+        </div>
+        <div class="centered">
+            <button id="toggleButton" class="btn btn-primary mt-3">Mostrar/Ocultar Formas</button>
+            <div id="message" class="message-box mt-3"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y otros scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script>
+        var shapes = document.querySelectorAll('.shape');
+        var toggleButton = document.getElementById('toggleButton');
+        var message = document.getElementById('message');
+        var isHidden = false;
+
+        toggleButton.addEventListener('click', function() {
+            shapes.forEach(function(shape) {
+                if (isHidden) {
+                    shape.style.display = 'block';
+                    toggleButton.innerText = 'Ocultar Formas';
+                    message.innerText = 'Las formas están visibles.';
+                } else {
+                    shape.style.display = 'none';
+                    toggleButton.innerText = 'Mostrar Formas';
+                    message.innerText = 'Las formas están ocultas.';
+                }
+            });
+            isHidden = !isHidden;
+        });
+    </script>
+</body>
+</html>

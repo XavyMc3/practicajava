@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+            background-color: hsl(0, 0%, 0%);
+            margin: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .card.revealed {
+            background-color: #fff;
+        }
+        #controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #startButton {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Juego de Memoria</h1>
+        <div id="gameBoard" class="d-flex flex-wrap justify-content-center"></div>
+        <div id="controls">
+            <button id="startButton" class="btn btn-primary">Iniciar Juego</button>
+            <button id="restartButton" class="btn btn-secondary" disabled>Reiniciar Juego</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y otros scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script>
+        var numbers = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
+        numbers.sort(() => Math.random() - 0.5);  // Mezclar el array
+
+        var gameBoard = document.getElementById('gameBoard');
+        var revealedCards = [];
+        var lockBoard = false;
+        var startButton = document.getElementById('startButton');
+        var restartButton = document.getElementById('restartButton');
+
+        function handleClick() {
+            if (lockBoard) return;
+            if (this === revealedCards[0]) return;
+            this.classList.add('revealed');
+            revealedCards.push(this);
+            if (revealedCards.length === 2) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            var firstCard = revealedCards[0];
+            var secondCard = revealedCards[1];
+            lockBoard = true;
+            if (firstCard.innerText === secondCard.innerText) {
+                setTimeout(() => {
+                    firstCard.removeEventListener('click', handleClick);
+                    secondCard.removeEventListener('click', handleClick);
+                    revealedCards = [];
+                    lockBoard = false;
+                    checkWin();
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    firstCard.classList.remove('revealed');
+                    secondCard.classList.remove('revealed');
+                    revealedCards = [];
+                    lockBoard = false;
+                }, 1000);
+            }
+        }
+
+        function checkWin() {
+            var allMatched = [...document.querySelectorAll('.card')].every(card => !card.classList.contains('revealed'));
+            if (allMatched) {
+                alert('¡Felicidades! ¡Has encontrado todas las parejas!');
+                restartButton.disabled = false;
+            }
+        }
+
+        function startGame() {
+            numbers.forEach(number => {
+                var card = document.createElement('div');
+                card.className = 'card';
+                card.innerText = number;
+                card.addEventListener('click', handleClick);
+                gameBoard.appendChild(card);
+            });
+            startButton.disabled = true;
+            setTimeout(() => {
+                document.querySelectorAll('.card').forEach(card => {
+                    card.classList.add('revealed');
+                    setTimeout(() => {
+                        card.classList.remove('revealed');
+                        restartButton.disabled = false;
+                    }, 2000);
+                });
+            }, 2000);
+        }
+
+        function restartGame() {
+            gameBoard.innerHTML = '';
+            numbers.sort(() => Math.random() - 0.5);
+            startButton.disabled = false;
+            restartButton.disabled = true;
+            lockBoard = false;
+            revealedCards = [];
+            startGame();
+        }
+
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', restartGame);
+    </script>
+</body>
+</html>
+
